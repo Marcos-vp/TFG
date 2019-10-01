@@ -2,49 +2,48 @@
 
 Servo motor;
 byte valor;
-int entrada;
+int entrada = 5;
 int pos = 0;
+int poten = A0;
+int giro;
 // declaración de estados del motor
 enum estado_pinza
 {
   m_cerrado,
   m_abierto,
-  //m_cerrando,
-  //m_abriendo,
 };
 // e_motor: estado en el que está el motor.
 estado_pinza e_motor = m_cerrado;
 void setup() {
 motor.attach (9);
+pinMode (entrada, INPUT);
 }
 
 void loop() {
   delay (550);
   valor = digitalRead (entrada);
-
+  giro = analogRead (poten);
+  giro = map (giro, 0, 1023, 0, 180);
 switch (e_motor) {
   case m_cerrado:
-  if (valor == LOW) {
+  if (valor == HIGH) {
   apertura ();
  // e_motor = m_abierto;
 }
-  else ;{
-    }
-
+  else ;{}
 break; 
   case m_abierto:
-  if (valor == HIGH) {
+  if (valor == LOW) {
     cierre ();
     //e_motor = m_cerrado;
   }
-else;{
-}
+else;{}
 break;
 }
 }
 
 void apertura () {
- for (pos = 0; pos <= 45; pos +=1) {
+ for (pos = giro; pos <= 180; pos +=5) {
       motor.write (pos);
       delay (15);
       e_motor = m_abierto;
@@ -53,7 +52,7 @@ void apertura () {
 }
 void cierre () {
 
-  for (pos = 45; pos >= 45; pos -=1) {
+  for (pos = 180; pos >= giro; pos -=5) {
       motor.write (pos);
       delay (15);
       e_motor = m_cerrado;
